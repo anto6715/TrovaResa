@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Lista</ion-title>
+    <ion-button slot="end" color="cyan" *ngIf="!flag" (click)="show__hide_search()">Filtra<ion-icon name="arrow-dropdown"></ion-icon></ion-button>
+    <ion-button slot="end" color="cyan" *ngIf="flag" (click)="show__hide_search()">Chiudi<ion-icon name="arrow-dropup"></ion-icon></ion-button>
+  </ion-toolbar>
+
+</ion-header>
+
+<ion-header *ngIf="flag">
+  <ion-item>
+    <ion-label>Cerca per</ion-label>
+    <ion-select value=1 [(ngModel)]="number" okText="Okay" cancelText="Dismiss">
+      <ion-select-option value=1>Nome</ion-select-option>
+      <ion-select-option value=2>Titolo</ion-select-option>
+      <ion-select-option value=3>Numero</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-searchbar (change)="filtra()" placeholder="Search" [(ngModel)]="filter" debounce="1" ></ion-searchbar>
+
+</ion-header>
+
+<ion-content>
+
+
+  <ion-item class="notFound" *ngIf="this.products.length == 0">
+    <ion-label >Nessun elemento trovato</ion-label>
+  </ion-item>
+
+  <ion-card *ngFor="let p of products; let i = index" class="card">
+    <ion-card-header class="header-card">
+      <ion-icon style="float: right;" name="trash" (click)="presentAlertConfirm(i)">
+      </ion-icon>
+      Numero {{i+1}}
+    </ion-card-header>
+    <div>
+      <ion-item>
+        <div class="column-flex">
+          <div class="column-label"><b>Titolo:</b></div>
+          <div class="column-text">{{p.title}}</div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="column-flex">
+          <div class="column-label"><b>Nome:</b></div>
+          <div class="column-text">{{p.name}}</div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="column-flex">
+          <div class="column-label"><b>Prezzo:</b></div>
+          <div class="column-text">{{p.price}}</div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="column-flex">
+          <div class="column-label"><b>Numero:</b></div>
+          <div class="column-text">{{p.num}}</div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="column-flex">
+          <div class="column-label"><b>Data:</b></div>
+          <div class="column-text">{{p.date}}</div>
+        </div>
+      </ion-item>
+      <ion-item>
+        <div class="column-flex" *ngIf="p.photo">
+          <div class="column-label"><b>Foto:</b></div>
+          <p align="center"><img [src]="p.photo" tappable (click)="openPreview(p.photo)"></p>
+        </div>
+        <hr>
+      </ion-item>-
+    </div>
+  </ion-card>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="cyan" (click)="filtra()">
+      <ion-icon name="search"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

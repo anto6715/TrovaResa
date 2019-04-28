@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Insert</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+<ion-title class="title">Inserisci dati:</ion-title>
+    <ion-list class="login-content">
+        <ion-item>
+            <ion-label floating><b>Titolo:</b></ion-label>
+            <ion-input type="text" [(ngModel)]="product.title" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating><b>Nome:</b></ion-label>
+            <ion-input type="text" [(ngModel)]="product.name" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating><b>Prezzo:</b></ion-label>
+            <ion-input type="number" [(ngModel)]="product.price" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating><b>Numero:</b></ion-label>
+            <ion-input type="number" [(ngModel)]="product.num" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating><b>Data:</b></ion-label>
+            <ion-input type="date" [(ngModel)]="product.date" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating><b>Foto:</b></ion-label>
+            <ion-button  class="btn" fill="clear" (click)="photo()"><ion-icon name="camera"></ion-icon></ion-button>
+            <p align="center"><img [src]="myPhoto" *ngIf="myPhoto"></p>
+        </ion-item>
+    </ion-list>
+
+
+  <!--  <div style="margin: 0 auto; width: 50%;">
+        <div class="form-group">
+            <label class="lbl">Titolo: </label>
+            <input type="text" name="title" class="form-control" [(ngModel)]="this.product.title">
+        </div>
+        <div class="form-group">
+            <label class="lbl">Nome: </label>
+            <input type="text" name="nome" class="form-control" [(ngModel)]="this.product.name">
+        </div>
+        <div class="form-group">
+            <label class="lbl">Prezzo: </label>
+            <input type="text" name="price" class="form-control" [(ngModel)]="this.product.price">
+        </div>
+        <div class="form-group">
+            <label class="lbl">Numero: </label>
+            <input type="text" name="num" class="form-control" [(ngModel)]="this.product.num">
+        </div>
+        <div class="form-group">
+            <label class="lbl">Data: </label>
+            <input type="date" name="data" class="form-control" [(ngModel)]="this.product.date">
+        </div>
+        <div class="form-group">
+            <label class="lbl">Foto: </label>
+            <ion-button  class="btn" fill="clear" (click)="photo()"><ion-icon name="camera"></ion-icon></ion-button>
+            <p align="center"><img [src]="myPhoto" *ngIf="myPhoto"></p>
+        </div>
+
+    </div>-->
+
+    <div style="text-align: center; margin: 5px">
+        <ion-button  class="btn" shape="round" (click)="save()">Salva</ion-button>
+
+      </div>
+</ion-content>
