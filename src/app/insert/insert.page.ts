@@ -4,6 +4,7 @@ import {IonicStorageModule, Storage} from '@ionic/storage';
 import {AlertController, NavController} from '@ionic/angular';
 import {Md5} from 'ts-md5/dist/md5';
 import {Camera, CameraOptions} from '@ionic-native/camera/ngx';
+import { ActivatedRoute } from "@angular/router";
 @Component({
   selector: 'app-insert',
   templateUrl: './insert.page.html',
@@ -14,14 +15,24 @@ export class InsertPage implements OnInit {
   product: Product = {} as Product;
   products: Product[] = [];
   myPhoto: any;
+  id:any;
   constructor(private storage: Storage,
               public alertController: AlertController,
               private navCtrl: NavController,
-              private camera: Camera,) {
+              private camera: Camera,
+              private route: ActivatedRoute) {
 
   }
 
   ngOnInit() {
+    // @ts-ignore
+    this.id = this.route.snapshot.paramMap.get('i');
+    if (this.id) {
+      this.storage.get('items').then((items) => {
+        this.product= items[this.id];
+        this.myPhoto = this.product.photo;
+      });
+    }
   }
 
   async presentAlert(string) {
@@ -36,6 +47,7 @@ export class InsertPage implements OnInit {
   }
 
   save() {
+    if (!this.id){
     let time = new Date();
     // @ts-ignore
     this.product.id = Md5.hashStr(time.toTimeString());
@@ -61,6 +73,19 @@ export class InsertPage implements OnInit {
           this.presentAlert(error);
         });
       }})
+    } else {
+      this.storage.get('items').then((items) => {
+        this.products = items;
+        this.products[this.id] = this.product;
+        this.storage.set('items', this.products).then((items) => {
+          this.products = items;
+          this.presentAlert('Prodotto modificato');
+          this.navCtrl.navigateBack('/home')
+        }, (error) => {
+          this.presentAlert(error);
+        });
+      })
+    }
 
 
   }

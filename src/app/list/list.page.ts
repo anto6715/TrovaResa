@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {Product} from '../models/product';
 import {IonicStorageModule, Storage} from '@ionic/storage';
-import {AlertController, ModalController} from '@ionic/angular';
+import {AlertController, ModalController, NavController} from '@ionic/angular';
 import {ImageModalPage} from '../image-modal/image-modal.page';
+import {NavigationExtras} from '@angular/router';
 
 @Component({
   selector: 'app-list',
@@ -12,7 +13,8 @@ import {ImageModalPage} from '../image-modal/image-modal.page';
 export class ListPage implements OnInit {
   product: Product = {} as Product;
   products: Product[] = [];
-  temp: Product[] = [];
+  productsViews: Product[] = [];
+  //temp: Product[] = [];
   filter: any;
   number: any;
   flag = false;
@@ -25,7 +27,8 @@ export class ListPage implements OnInit {
   };
   constructor(private storage: Storage,
               public alertController: AlertController,
-              private modalController: ModalController) { }
+              private modalController: ModalController,
+              private navCtrl: NavController) { }
 
   ngOnInit() {
     this.reset();
@@ -35,36 +38,27 @@ export class ListPage implements OnInit {
   filtra() {
     console.log(this.number);
     if (this.number == 1 || !this.number) {
+
       if (this.filter) {
-        this.storage.get('items').then((items) => {
-          this.products = items;
-          console.log(this.filter);
-          this.products = this.products.filter(x => this.similarity(x.name, this.filter));
-        });
+        this.productsViews = this.products.filter(x => this.similarity(x.title, this.filter));
       } else {
         this.reset();
       }
     }
 
     if (this.number == 2) {
+
       if (this.filter) {
-        this.storage.get('items').then((items) => {
-          this.products = items;
-          console.log(this.filter);
-          this.products = this.products.filter(x => this.similarity(x.title, this.filter));
-        });
+        this.productsViews = this.products.filter(x => this.similarity(x.name, this.filter));
       } else {
         this.reset();
       }
     }
 
     if (this.number == 3) {
+
       if (this.filter) {
-        this.storage.get('items').then((items) => {
-          this.products = items;
-          console.log(this.filter);
-          this.products = this.products.filter(x => this.similarity(x.num, this.filter));
-        });
+        this.productsViews = this.products.filter(x => x.num == this.filter);
       } else {
         this.reset();
       }
@@ -125,28 +119,27 @@ export class ListPage implements OnInit {
   reset() {
     this.storage.get('items').then((items) => {
       this.products = items;
-    });
-  }
-  getIndexById(){
-
-  }
-
-  delete(i) {
-    this.storage.get('items').then((items) => {
-      this.temp = items;
-      console.log(this.temp.findIndex( x => x.id ==this.product.id));
-      this.temp.splice(i,1);
-
-      this.storage.set('items', this.temp).then((items) => {
-        this.products = items;
-        this.presentAlert('Prodotto eliminato');
-      }, (error) => {
-        this.presentAlert(error);
-      });
+      this.productsViews = this.products;
+      this.filter = null;
     });
   }
 
-  async presentAlertConfirm(i) {
+
+  delete(id) {
+    console.log(id);
+    let i = this.products.findIndex( x => x.id ==id);
+    console.log(i);
+    this.products.splice(i,1);
+    this.storage.set('items', this.products).then((items) => {
+      this.products = items;
+      this.productsViews = this.products;
+      this.presentAlert('Prodotto eliminato');
+    }, (error) => {
+      this.presentAlert(error);
+    });
+  }
+
+  async presentAlertConfirm(id) {
     const alert = await this.alertController.create({
       header: 'Attenzione!',
       message: 'Sicuro di voler eliminare?',
@@ -161,7 +154,7 @@ export class ListPage implements OnInit {
         }, {
           text: 'Elimina',
           handler: () => {
-            this.delete(i);
+            this.delete(id);
           }
         }
       ]
@@ -193,5 +186,11 @@ export class ListPage implements OnInit {
     }).then(modal => {
       modal.present();
     });
+  }
+
+  modify(id){
+    console.log(id);
+    let i =this.products.findIndex( x => x.id ==id);
+    this.navCtrl.navigateForward('/insert/'+i);
   }
 }

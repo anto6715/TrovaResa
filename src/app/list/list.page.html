@@ -14,8 +14,8 @@
   <ion-item>
     <ion-label>Cerca per</ion-label>
     <ion-select value=1 [(ngModel)]="number" okText="Okay" cancelText="Dismiss">
-      <ion-select-option value=1>Nome</ion-select-option>
-      <ion-select-option value=2>Titolo</ion-select-option>
+      <ion-select-option value=1>Titolo</ion-select-option>
+      <ion-select-option value=2>Nome</ion-select-option>
       <ion-select-option value=3>Numero</ion-select-option>
     </ion-select>
   </ion-item>
@@ -31,10 +31,10 @@
     <ion-label >Nessun elemento trovato</ion-label>
   </ion-item>
 
-  <ion-card *ngFor="let p of products; let i = index" class="card">
+  <ion-card *ngFor="let p of productsViews; let i = index" class="card">
     <ion-card-header class="header-card">
-      <ion-icon style="float: right;" name="trash" (click)="presentAlertConfirm(i)">
-      </ion-icon>
+      <ion-icon style="float: start;" name="create" (click)="modify(p.id)"></ion-icon>
+      <ion-icon style="float: right;" name="trash" (click)="presentAlertConfirm(p.id)"></ion-icon>
       Numero {{i+1}}
     </ion-card-header>
     <div>
@@ -79,8 +79,8 @@
   </ion-card>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="cyan" (click)="filtra()">
-      <ion-icon name="search"></ion-icon>
+    <ion-fab-button color="cyan" (click)="reset()">
+      <ion-icon name="refresh"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 
