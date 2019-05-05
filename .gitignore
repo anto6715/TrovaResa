@@ -32,3 +32,13 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+
+google-services\.json
+
+package-lock\.json
+
+src/environments/environment\.ts
+
+src/app/app\.component\.ts
+
+src/app/app\.module\.ts

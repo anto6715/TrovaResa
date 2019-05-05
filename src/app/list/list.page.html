@@ -34,32 +34,32 @@
   <ion-card *ngFor="let p of productsViews; let i = index" class="card">
     <ion-card-header class="header-card">
       <ion-icon style="float: start;" name="create" (click)="modify(p.id)"></ion-icon>
-      <ion-icon style="float: right;" name="trash" (click)="presentAlertConfirm(p.id)"></ion-icon>
+      <ion-icon style="float: right;" name="trash" (click)="presentAlertConfirm(p.id, p.img)"></ion-icon>
       Numero {{i+1}}
     </ion-card-header>
     <div>
       <ion-item>
         <div class="column-flex">
           <div class="column-label"><b>Titolo:</b></div>
-          <div class="column-text">{{p.title}}</div>
+          <div class="column-text">{{p.titolo}}</div>
         </div>
       </ion-item>
       <ion-item>
         <div class="column-flex">
           <div class="column-label"><b>Nome:</b></div>
-          <div class="column-text">{{p.name}}</div>
+          <div class="column-text">{{p.nome}}</div>
         </div>
       </ion-item>
       <ion-item>
         <div class="column-flex">
           <div class="column-label"><b>Prezzo:</b></div>
-          <div class="column-text">{{p.price}}</div>
+          <div class="column-text">{{p.prezzo}}</div>
         </div>
       </ion-item>
       <ion-item>
         <div class="column-flex">
           <div class="column-label"><b>Numero:</b></div>
-          <div class="column-text">{{p.num}}</div>
+          <div class="column-text">{{p.numero}}</div>
         </div>
       </ion-item>
       <ion-item>
@@ -69,9 +69,9 @@
         </div>
       </ion-item>
       <ion-item>
-        <div class="column-flex" *ngIf="p.photo">
+        <div class="column-flex" *ngIf="p.img">
           <div class="column-label"><b>Foto:</b></div>
-          <p align="center"><img [src]="p.photo" tappable (click)="openPreview(p.photo)"></p>
+          <p align="center"><img [src]="p.img" tappable (click)="openPreview(p.img)"></p>
         </div>
         <hr>
       </ion-item>-
@@ -79,7 +79,7 @@
   </ion-card>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="cyan" (click)="reset()">
+    <ion-fab-button color="cyan" (click)="getAll()">
       <ion-icon name="refresh"></ion-icon>
     </ion-fab-button>
   </ion-fab>

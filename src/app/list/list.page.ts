@@ -3,8 +3,8 @@ import {Product} from '../models/product';
 import {IonicStorageModule, Storage} from '@ionic/storage';
 import {AlertController, ModalController, NavController} from '@ionic/angular';
 import {ImageModalPage} from '../image-modal/image-modal.page';
-import {NavigationExtras} from '@angular/router';
-
+import { ProductServiceService} from '../services/product-service.service';
+import * as firebase from "firebase";
 @Component({
   selector: 'app-list',
   templateUrl: './list.page.html',
@@ -12,26 +12,20 @@ import {NavigationExtras} from '@angular/router';
 })
 export class ListPage implements OnInit {
   product: Product = {} as Product;
-  products: Product[] = [];
-  productsViews: Product[] = [];
-  //temp: Product[] = [];
-  filter: any;
-  number: any;
-  flag = false;
+  products: Product[] = []; // lista completa
+  productsViews: Product[] = [];  // lista prodotti mostrati all'utente, può essere filtrata
+  filter: any;  // attributo da cercare
+  number: any;  // nidica con quale parametro cercare
+  flag = false; // flag per mostrare o no area ricerca
 
-  sliderOpts = {
-    zoom: false,
-    slidesPerView: 1.5,
-    spaceBetween: 20,
-    centeredSlides: true
-  };
   constructor(private storage: Storage,
               public alertController: AlertController,
               private modalController: ModalController,
-              private navCtrl: NavController) { }
+              private navCtrl: NavController,
+              private productService: ProductServiceService) { }
 
   ngOnInit() {
-    this.reset();
+    this.getAll();
   }
 
 
@@ -40,33 +34,34 @@ export class ListPage implements OnInit {
     if (this.number == 1 || !this.number) {
 
       if (this.filter) {
-        this.productsViews = this.products.filter(x => this.similarity(x.title, this.filter));
+        this.productsViews = this.products.filter(x => this.similarity(x.titolo, this.filter));
       } else {
-        this.reset();
+        this.getAll();
       }
     }
 
     if (this.number == 2) {
 
       if (this.filter) {
-        this.productsViews = this.products.filter(x => this.similarity(x.name, this.filter));
+        this.productsViews = this.products.filter(x => this.similarity(x.nome, this.filter));
       } else {
-        this.reset();
+        this.getAll();
       }
     }
 
     if (this.number == 3) {
 
       if (this.filter) {
-        this.productsViews = this.products.filter(x => x.num == this.filter);
+        this.productsViews = this.products.filter(x => x.numero == this.filter);
       } else {
-        this.reset();
+        this.getAll();
       }
     }
 
 
 
   }
+
   similarity(s1, s2) {
 
     if (s1) {
@@ -115,19 +110,33 @@ export class ListPage implements OnInit {
     return costs[s2.length];
   }
 
+  getAll() {
+    this.productService.getAll().subscribe( products => {
 
-  reset() {
-    this.storage.get('items').then((items) => {
+      this.products = this.productsViews = products;
+      this.productsViews = this.products;
+    })
+    /*this.storage.get('items').then((items) => {
       this.products = items;
       this.productsViews = this.products;
       this.filter = null;
-    });
+    });*/
   }
 
-
-  delete(id) {
+  delete(id, img) {
     console.log(id);
-    let i = this.products.findIndex( x => x.id ==id);
+
+    this.productService.delete(id).subscribe(product => {
+      this.presentAlert('Prodotto eliminato');
+      this.getAll();
+      var desertRef = firebase.storage().refFromURL(img);
+      desertRef.delete().then(function() {
+        console.log('foto eliminata da firebase')
+      }).catch(function(error) {
+        alert(error);
+      });
+    })
+    /*let i = this.products.findIndex( x => x.id ==id);
     console.log(i);
     this.products.splice(i,1);
     this.storage.set('items', this.products).then((items) => {
@@ -136,10 +145,10 @@ export class ListPage implements OnInit {
       this.presentAlert('Prodotto eliminato');
     }, (error) => {
       this.presentAlert(error);
-    });
+    });*/
   }
 
-  async presentAlertConfirm(id) {
+  async presentAlertConfirm(id, img) {
     const alert = await this.alertController.create({
       header: 'Attenzione!',
       message: 'Sicuro di voler eliminare?',
@@ -154,7 +163,7 @@ export class ListPage implements OnInit {
         }, {
           text: 'Elimina',
           handler: () => {
-            this.delete(id);
+            this.delete(id, img);
           }
         }
       ]
@@ -173,9 +182,9 @@ export class ListPage implements OnInit {
     alert.present();
   }
 
-    show__hide_search() {
-        this.flag = !this.flag;
-    }
+  show__hide_search() {
+      this.flag = !this.flag;
+  }
 
   openPreview(img) {
     this.modalController.create({
@@ -190,7 +199,8 @@ export class ListPage implements OnInit {
 
   modify(id){
     console.log(id);
-    let i =this.products.findIndex( x => x.id ==id);
-    this.navCtrl.navigateForward('/insert/'+i);
+    this.navCtrl.navigateForward('/insert/'+id);
   }
+
+
 }
